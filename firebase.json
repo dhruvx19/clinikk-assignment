@@ -1,1 +1,41 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"firebase-todo-sync","appId":"1:553381381690:android:245f0b8eef959397831703","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"firebase-todo-sync","appId":"1:553381381690:ios:488726c19e13b9a0831703","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"macos":{"default":{"projectId":"firebase-todo-sync","appId":"1:553381381690:ios:488726c19e13b9a0831703","uploadDebugSymbols":false,"fileOutput":"macos/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"firebase-todo-sync","configurations":{"android":"1:553381381690:android:245f0b8eef959397831703","ios":"1:553381381690:ios:488726c19e13b9a0831703","macos":"1:553381381690:ios:488726c19e13b9a0831703","web":"1:553381381690:web:9f4202b3218fb00c831703","windows":"1:553381381690:web:8f66383158e5ef22831703"}}}}}}
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "firebase-todo-sync",
+                    "appId": "1:553381381690:android:245f0b8eef959397831703",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "ios": {
+                "default": {
+                    "projectId": "firebase-todo-sync",
+                    "appId": "1:553381381690:ios:488726c19e13b9a0831703",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "ios/Runner/GoogleService-Info.plist"
+                }
+            },
+            "macos": {
+                "default": {
+                    "projectId": "firebase-todo-sync",
+                    "appId": "1:553381381690:ios:488726c19e13b9a0831703",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "macos/Runner/GoogleService-Info.plist"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "firebase-todo-sync",
+                    "configurations": {
+                        "android": "1:553381381690:android:245f0b8eef959397831703",
+                        "ios": "1:553381381690:ios:488726c19e13b9a0831703",
+                        "macos": "1:553381381690:ios:488726c19e13b9a0831703",
+                        "web": "1:553381381690:web:9f4202b3218fb00c831703",
+                        "windows": "1:553381381690:web:8f66383158e5ef22831703"
+                    }
+                }
+            }
+        }
+    }
+}
