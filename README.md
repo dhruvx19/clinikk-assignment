@@ -1,4 +1,3 @@
-```markdown
 # Clinikk Assignment - Flutter Intern
 
 This repository contains a Flutter-based **To-Do App** built as part of the Clinikk assignment. The app allows users to manage tasks locally and demonstrates simple API integration by fetching and displaying data from an open-source API.
