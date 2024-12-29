@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo_app/home.dart';
-import 'package:todo_app/login/login.dart';
+import 'package:todo_app/views/home_page.dart';
+import 'package:todo_app/views/login/login.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

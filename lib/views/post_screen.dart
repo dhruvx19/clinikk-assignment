@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:todo_app/model/posts_model.dart';
+import 'package:todo_app/models/posts_model.dart';
 
 class PostsScreen extends StatefulWidget {
   @override

@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:todo_app/model/posts_model.dart';
-import 'package:todo_app/view/view.dart';
+import 'package:todo_app/models/task_model.dart';
+import 'package:todo_app/views/widgets/time_picker.dart';
 
 class TodoScreen extends StatefulWidget {
   @override
@@ -59,6 +59,26 @@ class _TodoScreenState extends State<TodoScreen>
     setState(() {
       tasks.add(task);
       _saveTasks();
+    });
+  }
+
+  void _showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.grey[800],
+      textColor: Colors.white,
+    );
+  }
+
+  void _editTask(Task task) {
+    setState(() {
+      final index = tasks.indexWhere((t) => t.id == task.id);
+      if (index != -1) {
+        tasks[index] = task;
+        _saveTasks();
+      }
     });
   }
 
@@ -133,68 +153,68 @@ class _TodoScreenState extends State<TodoScreen>
   }
 
   Future<TimeOfDay?> _showTimePicker(BuildContext context) async {
-  return showDialog<TimeOfDay>(
-    context: context,
-    builder: (BuildContext context) {
-      TimeOfDay selectedTime = _selectedTime;
-      return Dialog(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Choose Time',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).textTheme.bodyLarge?.color,
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                height: 200,
-                child: TimePickerSpinner(
-                  time: DateTime.now().copyWith(
-                    hour: selectedTime.hour,
-                    minute: selectedTime.minute,
+    return showDialog<TimeOfDay>(
+      context: context,
+      builder: (BuildContext context) {
+        TimeOfDay selectedTime = _selectedTime;
+        return Dialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Choose Time',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
-                  onTimeChange: (DateTime dateTime) {
-                    selectedTime = TimeOfDay.fromDateTime(dateTime);
-                  },
                 ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                const SizedBox(height: 20),
+                SizedBox(
+                  height: 200,
+                  child: TimePickerSpinner(
+                    time: DateTime.now().copyWith(
+                      hour: selectedTime.hour,
+                      minute: selectedTime.minute,
+                    ),
+                    onTimeChange: (DateTime dateTime) {
+                      selectedTime = TimeOfDay.fromDateTime(dateTime);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                        ),
                       ),
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context, selectedTime),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context, selectedTime),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Save'),
                     ),
-                    child: const Text('Save'),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 
 // Custom Time Picker Spinner Widget
 
@@ -202,8 +222,6 @@ class _TodoScreenState extends State<TodoScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Calendar'),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(140),
           child: Column(
@@ -268,7 +286,7 @@ class _TodoScreenState extends State<TodoScreen>
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddTaskDialog(context),
+        onPressed: () => _showTaskDialog(context),
         child: const Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -288,8 +306,20 @@ class _TodoScreenState extends State<TodoScreen>
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.grey[900],
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[900]
+                  : Colors.grey[100],
               borderRadius: BorderRadius.circular(8),
+              boxShadow: Theme.of(context).brightness == Brightness.light
+                  ? [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 2,
+                        offset: const Offset(0, 1),
+                      ),
+                    ]
+                  : null,
             ),
             child: ListTile(
               leading: Checkbox(
@@ -305,12 +335,17 @@ class _TodoScreenState extends State<TodoScreen>
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(task.description),
+                  Text(
+                    task.description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: _getCategoryColor(task.category),
                           borderRadius: BorderRadius.circular(12),
@@ -322,7 +357,7 @@ class _TodoScreenState extends State<TodoScreen>
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '${task.date.hour.toString().padLeft(2, '0')}:${task.date.minute.toString().padLeft(2, '0')}',
+                        '${task.time.hour.toString().padLeft(2, '0')}:${task.time.minute.toString().padLeft(2, '0')}',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[400],
@@ -332,14 +367,24 @@ class _TodoScreenState extends State<TodoScreen>
                   ),
                 ],
               ),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  setState(() {
-                    tasks.remove(task);
-                    _saveTasks();
-                  });
-                },
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () =>
+                        _showTaskDialog(context, existingTask: task),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      setState(() {
+                        tasks.remove(task);
+                        _saveTasks();
+                      });
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -347,7 +392,6 @@ class _TodoScreenState extends State<TodoScreen>
       },
     );
   }
-
 
   Color _getCategoryColor(String category) {
     switch (category.toLowerCase()) {
@@ -362,54 +406,62 @@ class _TodoScreenState extends State<TodoScreen>
     }
   }
 
-  Future<void> _showAddTaskDialog(BuildContext context) async {
-    final titleController = TextEditingController();
-    final descriptionController = TextEditingController();
-    String selectedCategory = 'Work';
+  Future<void> _showTaskDialog(BuildContext context,
+      {Task? existingTask}) async {
+    final titleController =
+        TextEditingController(text: existingTask?.title ?? '');
+    final descriptionController =
+        TextEditingController(text: existingTask?.description ?? '');
+    String selectedCategory = existingTask?.category ?? 'Work';
+    final isEditing = existingTask != null;
 
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add Task'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
-                    border: OutlineInputBorder(),
+          title: Text(isEditing ? 'Edit Task' : 'Add Task'),
+          content: ConstrainedBox(
+            constraints:
+                const BoxConstraints(maxHeight: 400), // Prevent overflow
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: titleController,
+                    decoration: const InputDecoration(
+                      labelText: 'Title',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: descriptionController,
+                    decoration: const InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 3,
                   ),
-                  maxLines: 3,
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: selectedCategory,
-                  items: ['Work', 'Home', 'University']
-                      .map((category) => DropdownMenuItem(
-                            value: category,
-                            child: Text(category),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    selectedCategory = value!;
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Category',
-                    border: OutlineInputBorder(),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: selectedCategory,
+                    items: ['Work', 'Home', 'University']
+                        .map((category) => DropdownMenuItem(
+                              value: category,
+                              child: Text(category),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      selectedCategory = value!;
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Category',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           actions: [
@@ -419,43 +471,54 @@ class _TodoScreenState extends State<TodoScreen>
             ),
             TextButton(
               onPressed: () async {
-                if (titleController.text.isNotEmpty) {
-                  // First show date picker
-                  final DateTime? selectedDate = await _showDatePicker(
-                    context,
-                    _selectedDay,
-                  );
+                // Validation check
+                if (titleController.text.trim().isEmpty) {
+                  _showToast('Please enter a title');
+                  return;
+                }
+                if (descriptionController.text.trim().isEmpty) {
+                  _showToast('Please enter a description');
+                  return;
+                }
 
-                  if (selectedDate != null) {
-                    // Then show time picker
-                    final TimeOfDay? selectedTime =
-                        await _showTimePicker(context);
+                final DateTime? selectedDate = await _showDatePicker(
+                  context,
+                  isEditing ? existingTask!.date : _selectedDay,
+                );
 
-                    if (selectedTime != null) {
-                      // Create the final DateTime with both date and time
-                      final DateTime taskDateTime = DateTime(
-                        selectedDate.year,
-                        selectedDate.month,
-                        selectedDate.day,
-                        selectedTime.hour,
-                        selectedTime.minute,
-                      );
+                if (selectedDate != null) {
+                  final TimeOfDay? selectedTime =
+                      await _showTimePicker(context);
 
-                      _addTask(Task(
-                        id: DateTime.now().toString(),
-                        title: titleController.text,
-                        description: descriptionController.text,
-                        date: taskDateTime,
-                        category: selectedCategory,
-                        time: selectedTime,
-                        
-                      ));
+                  if (selectedTime != null) {
+                    final DateTime taskDateTime = DateTime(
+                      selectedDate.year,
+                      selectedDate.month,
+                      selectedDate.day,
+                      selectedTime.hour,
+                      selectedTime.minute,
+                    );
+
+                    final task = Task(
+                      id: existingTask?.id ?? DateTime.now().toString(),
+                      title: titleController.text.trim(),
+                      description: descriptionController.text.trim(),
+                      date: taskDateTime,
+                      category: selectedCategory,
+                      time: selectedTime,
+                      isCompleted: existingTask?.isCompleted ?? false,
+                    );
+
+                    if (isEditing) {
+                      _editTask(task);
+                    } else {
+                      _addTask(task);
                     }
+                    Navigator.pop(context);
                   }
-                  Navigator.pop(context);
                 }
               },
-              child: const Text('Add'),
+              child: Text(isEditing ? 'Save' : 'Add'),
             ),
           ],
         );

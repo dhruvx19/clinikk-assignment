@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-import 'dart:convert';
-
 class WeekCalendar extends StatelessWidget {
   final DateTime selectedDate;
   final Function(DateTime) onDateSelected;
 
-  WeekCalendar({
+  const WeekCalendar({
+    super.key,
     required this.selectedDate,
     required this.onDateSelected,
   });
 
   List<DateTime> _getDaysInWeek(DateTime date) {
     final firstDayOfWeek = date.subtract(Duration(days: date.weekday - 1));
-    return List.generate(7, (index) => firstDayOfWeek.add(Duration(days: index)));
+    return List.generate(
+        7, (index) => firstDayOfWeek.add(Duration(days: index)));
   }
 
   @override
@@ -60,9 +60,9 @@ class WeekCalendar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: week.map((date) {
             final isSelected = date.day == selectedDate.day;
-            final isWeekend = date.weekday == DateTime.sunday || 
-                            date.weekday == DateTime.saturday;
-            
+            final isWeekend = date.weekday == DateTime.sunday ||
+                date.weekday == DateTime.saturday;
+
             return GestureDetector(
               onTap: () => onDateSelected(date),
               child: Container(
@@ -76,7 +76,15 @@ class WeekCalendar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][date.weekday - 1],
+                      [
+                        'SUN',
+                        'MON',
+                        'TUE',
+                        'WED',
+                        'THU',
+                        'FRI',
+                        'SAT'
+                      ][date.weekday - 1],
                       style: TextStyle(
                         fontSize: 12,
                         color: isWeekend ? Colors.red : Colors.grey,
@@ -87,8 +95,11 @@ class WeekCalendar extends StatelessWidget {
                       '${date.day}',
                       style: TextStyle(
                         fontSize: 16,
-                        color: isSelected ? Colors.white : 
-                               isWeekend ? Colors.red : Colors.white,
+                        color: isSelected
+                            ? Colors.white
+                            : isWeekend
+                                ? Colors.red
+                                : Colors.white,
                       ),
                     ),
                   ],

@@ -1,9 +1,10 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:todo_app/login/signin.dart';
-import 'package:todo_app/services/auth/auth_services.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/theme_provider.dart';
+import 'package:todo_app/views/login/signin.dart';
+import 'package:todo_app/services/auth_services.dart';
 
 class Login extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -13,30 +14,31 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: _buildSignUp(context),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 50,
-        leading: GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: Container(
-            margin: const EdgeInsets.only(left: 10),
-            decoration: const BoxDecoration(
-              color: Color(0xffF7F7F9),
-              shape: BoxShape.circle,
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Colors.black,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: IconButton(
+              icon: Icon(
+                themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                color: isDark ? Colors.white : Colors.black,
               ),
+              onPressed: () {
+                themeProvider.toggleTheme();
+              },
             ),
           ),
-        ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -48,13 +50,13 @@ class Login extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                 ),
               ),
               const SizedBox(height: 80),
-              _buildEmailField(),
+              _buildEmailField(isDark),
               const SizedBox(height: 20),
-              _buildPasswordField(),
+              _buildPasswordField(isDark),
               const SizedBox(height: 50),
               _buildLoginButton(context),
             ],
@@ -64,7 +66,7 @@ class Login extends StatelessWidget {
     );
   }
 
-  Widget _buildEmailField() {
+  Widget _buildEmailField(bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -72,7 +74,7 @@ class Login extends StatelessWidget {
           'Email Address',
           style: GoogleFonts.poppins(
             fontSize: 16,
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
         const SizedBox(height: 16),
@@ -80,10 +82,10 @@ class Login extends StatelessWidget {
           controller: _emailController,
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color(0xffF7F7F9),
+            fillColor: isDark ? Colors.grey[800] : const Color(0xffF7F7F9),
             hintText: 'example@gmail.com',
-            hintStyle: const TextStyle(
-              color: Color(0xff6A6A6A),
+            hintStyle: TextStyle(
+              color: isDark ? Colors.grey[400] : const Color(0xff6A6A6A),
               fontSize: 14,
             ),
             border: OutlineInputBorder(
@@ -91,12 +93,13 @@ class Login extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
             ),
           ),
+          style: TextStyle(color: isDark ? Colors.white : Colors.black),
         ),
       ],
     );
   }
 
-  Widget _buildPasswordField() {
+  Widget _buildPasswordField(bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -104,7 +107,7 @@ class Login extends StatelessWidget {
           'Password',
           style: GoogleFonts.poppins(
             fontSize: 16,
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
         const SizedBox(height: 16),
@@ -113,59 +116,61 @@ class Login extends StatelessWidget {
           obscureText: true,
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color(0xffF7F7F9),
+            fillColor: isDark ? Colors.grey[800] : const Color(0xffF7F7F9),
             border: OutlineInputBorder(
               borderSide: BorderSide.none,
               borderRadius: BorderRadius.circular(14),
             ),
           ),
+          style: TextStyle(color: isDark ? Colors.white : Colors.black),
         ),
       ],
     );
   }
-Widget _buildLoginButton(BuildContext context) {
- final size = MediaQuery.of(context).size;
- final textScale = MediaQuery.of(context).textScaler.scale(1.0);
- final valueFontSize = (size.width * 0.045).clamp(14.0, 20.0);
 
- return Container(
-   width: double.infinity, 
-   height: 60,
-   decoration: BoxDecoration(
-     borderRadius: BorderRadius.circular(20),
-     gradient: const LinearGradient(
-       colors: [Colors.black, Colors.blue],
-       begin: Alignment.center,
-       end: Alignment.topLeft,
-     ),
-   ),
-   child: Material(
-     color: Colors.transparent,
-     child: InkWell(
-       borderRadius: BorderRadius.circular(20),
-       onTap: () async {
-         await AuthService().signin(
-           email: _emailController.text,
-           password: _passwordController.text,
-           context: context
-         );
-       },
-       child: Center(
-         child: Text(
-           "Sign In",
-           style: GoogleFonts.poppins(
-             fontSize: valueFontSize / textScale,
-             fontWeight: FontWeight.w600,
-             color: Colors.white,
-           ),
-         ),
-       ),
-     ),
-   ),
- );
-}
+  Widget _buildLoginButton(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final textScale = MediaQuery.of(context).textScaler.scale(1.0);
+    final valueFontSize = (size.width * 0.045).clamp(14.0, 20.0);
+
+    return Container(
+      width: double.infinity,
+      height: 60,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          colors: [Theme.of(context).primaryColor, Colors.blue],
+          begin: Alignment.center,
+          end: Alignment.topLeft,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () async {
+            await AuthService().signin(
+                email: _emailController.text,
+                password: _passwordController.text,
+                context: context);
+          },
+          child: Center(
+            child: Text(
+              "Sign In",
+              style: GoogleFonts.poppins(
+                fontSize: valueFontSize / textScale,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _buildSignUp(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: RichText(
@@ -175,14 +180,14 @@ Widget _buildLoginButton(BuildContext context) {
             TextSpan(
               text: "New User? ",
               style: GoogleFonts.poppins(
-                color: const Color(0xff6A6A6A),
+                color: isDark ? Colors.grey[400] : const Color(0xff6A6A6A),
                 fontSize: 16,
               ),
             ),
             TextSpan(
               text: "Create Account",
               style: GoogleFonts.poppins(
-                color: const Color(0xff1A1D1E),
+                color: isDark ? Colors.white : const Color(0xff1A1D1E),
                 fontSize: 16,
               ),
               recognizer: TapGestureRecognizer()
