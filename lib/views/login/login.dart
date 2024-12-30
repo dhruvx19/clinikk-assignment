@@ -2,15 +2,50 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/theme_provider.dart';
+import 'package:todo_app/provider/theme_provider.dart';
 import 'package:todo_app/views/login/signin.dart';
 import 'package:todo_app/services/auth_services.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+  const Login({super.key});
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
-  Login({super.key});
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSignIn() async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await AuthService().signin(
+        email: _emailController.text,
+        password: _passwordController.text,
+        context: context,
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,21 +183,25 @@ class Login extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          onTap: () async {
-            await AuthService().signin(
-                email: _emailController.text,
-                password: _passwordController.text,
-                context: context);
-          },
+          onTap: _handleSignIn,
           child: Center(
-            child: Text(
-              "Sign In",
-              style: GoogleFonts.poppins(
-                fontSize: valueFontSize / textScale,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
+            child: _isLoading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : Text(
+                    "Sign In",
+                    style: GoogleFonts.poppins(
+                      fontSize: valueFontSize / textScale,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
           ),
         ),
       ),

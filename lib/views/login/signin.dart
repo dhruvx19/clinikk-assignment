@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/theme_provider.dart';
+import 'package:todo_app/provider/theme_provider.dart';
 import 'package:todo_app/views/login/login.dart';
 import 'package:todo_app/services/auth_services.dart';
 

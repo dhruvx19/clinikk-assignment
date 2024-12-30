@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo_app/theme_provider.dart';
+import 'package:todo_app/provider/theme_provider.dart';
 import 'package:todo_app/views/todo_screen.dart';
 import 'package:todo_app/views/post_screen.dart';
 import 'package:todo_app/services/auth_services.dart';
