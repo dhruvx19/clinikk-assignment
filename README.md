@@ -4,24 +4,38 @@ This repository contains a Flutter-based **To-Do App** built as part of the Clin
 
 ---
 
-## Features
-
-### Task Management
-- **Add New Tasks**: Users can add tasks with a title.
-- **Mark as Complete**: Tasks can be marked complete using a checkbox.
-- **Delete Tasks**: Users can delete tasks from the list.
-- **Persist Tasks**: Tasks are saved locally using **Shared Preferences**, ensuring data is available across sessions.
-
-### API Integration
-- Fetch and display a list of posts from [`https://jsonplaceholder.typicode.com/posts`](https://jsonplaceholder.typicode.com/posts).
-- Filter posts by user ID using a search box (e.g., [`https://jsonplaceholder.typicode.com/posts?userId=1`](https://jsonplaceholder.typicode.com/posts?userId=1)).
-
-### Design
-- **Material Design** principles followed.
-- UI inspired by [Figma Community Design](https://www.figma.com/community/file/1083383246788717048).
-- Responsive layout with attention to typography and user experience.
+Here’s the updated **Features** section for your `README.md`:  
 
 ---
+
+## Features  
+
+### Task Management  
+- **Add New Tasks**: Users can add tasks with a title, description, category, date, and time.  
+- **Mark as Complete**: Tasks can be marked as complete or uncompleted using a checkbox.  
+- **Organized Views**: Categorized tasks into "Today" and "Completed" sections for better task management.  
+- **CRUD Operations**: Supports Create, Read, Update, and Delete functionality for tasks.  
+- **Persist Tasks**: Tasks are saved locally using **Shared Preferences**, ensuring data is available across sessions.  
+
+### API Integration  
+- Fetch and display a list of posts from [`https://jsonplaceholder.typicode.com/posts`](https://jsonplaceholder.typicode.com/posts).  
+- Filter posts by user ID or any part of the title using a search box (e.g., [`https://jsonplaceholder.typicode.com/posts?userId=1`](https://jsonplaceholder.typicode.com/posts?userId=1)).  
+
+### Firebase Authentication  
+- User login and signup implemented with Firebase Authentication for secure access.  
+
+### UI/UX Design  
+- **Material Design** principles followed for a modern and intuitive interface.  
+- Inspired by [Figma Community Design](https://www.figma.com/community/file/1083383246788717048) for consistent and visually appealing UI.  
+- Supports both **light mode** and **dark mode** for enhanced user experience.  
+- Smooth animations for transitions between screens and interactions.  
+
+### Architecture  
+- **Clean Architecture**: Proper separation of UI, data, and logic layers to ensure maintainable and scalable code.  
+
+---
+
+Let me know if you’d like any further enhancements or changes!
 
 ## Requirements
 
